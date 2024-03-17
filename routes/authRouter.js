@@ -1,30 +1,57 @@
-const express = require('express')
-const authRouter = express.Router()
-const User = require('../models/user.js')
-const jwt = require('jsonwebtoken')
+// const express = require('express')
+// const authRouter = express.Router()
+// const User = require('../models/user.js')
+// const jwt = require('jsonwebtoken')
 
+
+// //signup
+// authRouter.post("/signup", async (req, res, next) => {
+//     try {
+//         const user = await User.findOne({ username: req.body.username })
+//         if (user) {
+//             res.status(403)
+//             return next(new Error("That username is taken"))
+//         } else {
+//             const newUser = User(req.body)
+//             const savedUser = await newUser.save()
+//             const token = jwt.sign(savedUser.withoutPassword(), process.env.SECRET)
+//             return res.status(201).send({ token, user: savedUser.withoutPassword() })
+//         }
+//     } catch (err) {
+//         res.status(500)
+//         return next(err)
+//     }
+// })
+
+
+
+
+// //module.exports = authRouter
+// export default authRouter;
+
+import express from 'express';
+import User from '../models/user.js';
+import jwt from 'jsonwebtoken';
+
+const authRouter = express.Router();
 
 //signup
 authRouter.post("/signup", async (req, res, next) => {
     try {
-        const user = await User.findOne({ username: req.body.username })
+        const user = await User.findOne({ username: req.body.username });
         if (user) {
-            res.status(403)
-            return next(new Error("That username is taken"))
+            res.status(403);
+            return next(new Error("That username is taken"));
         } else {
-            const newUser = User(req.body)
-            const savedUser = await newUser.save()
-            const token = jwt.sign(savedUser.withoutPassword(), process.env.SECRET)
-            return res.status(201).send({ token, user: savedUser.withoutPassword() })
+            const newUser = new User(req.body);
+            const savedUser = await newUser.save();
+            const token = jwt.sign(savedUser.withoutPassword(), process.env.SECRET);
+            return res.status(201).send({ token, user: savedUser.withoutPassword() });
         }
     } catch (err) {
-        res.status(500)
-        return next(err)
+        res.status(500);
+        return next(err);
     }
-})
+});
 
-
-
-
-//module.exports = authRouter
 export default authRouter;
